@@ -1,362 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KenKen Helper</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#000000',
-                            500: '#000',
-                            600: '#000',
-                            700: '#000'
-                        }
-                    }
-                }
-            }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KenKen Helper</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"]
+          }
         }
-    </script>
+      }
+    }
+  </script>
 </head>
-<body class="bg-gradient-to-br from-blue-600 via-purple-600 to-purple-800 min-h-screen p-5 font-sans">
-    <div class="max-w-7xl mx-auto">
-        <h1 class="text-center text-white text-5xl font-bold mb-8 drop-shadow-lg">🧮 KenKen Helper</h1>
+<body class="bg-white text-black min-h-screen p-5 font-mono">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-center text-3xl font-bold mb-6">KenKen Helper</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <!-- Template Section -->
+      <div class="border rounded-xl p-4">
+        <h2 class="text-lg font-bold mb-4 text-center">+ Addition</h2>
+        <label class="block text-sm mb-1">Goal:</label>
+        <input id="add-goal" type="number" value="10" class="w-full border rounded p-1 mb-2">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            <!-- Addition Section -->
-            <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/20">
-                <h2 class="text-gray-800 text-xl font-bold mb-6 text-center pb-3 border-b-2 border-green-500">
-                    <span class="text-2xl mr-2">+</span>Addition
-                </h2>
-                <div class="mb-4">
-                    <label for="add-goal" class="block text-sm font-semibold text-gray-700 mb-2">Goal Number:</label>
-                    <input type="number" id="add-goal" min="1" max="100" value="10" 
-                           class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500 transition-colors">
-                </div>
-                <div class="mb-4">
-                    <label for="add-digits" class="block text-sm font-semibold text-gray-700 mb-2">Number of Digits:</label>
-                    <select id="add-digits" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500 transition-colors">
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div class="flex items-center gap-3 mb-4">
-                    <input type="checkbox" id="add-repeat" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                    <label for="add-repeat" class="text-sm font-semibold text-gray-700">Allow repeating digits</label>
-                </div>
-                <button onclick="calculateCombinations('add')" 
-                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-200 mb-4">
-                    Find Combinations
-                </button>
-                <div id="add-results" class="mt-5"></div>
-                <div class="mt-5 pt-4 border-t-2 border-gray-200">
-                    <h3 class="text-gray-700 font-semibold mb-3">Saved Combinations</h3>
-                    <div id="add-saved"></div>
-                </div>
-            </div>
+        <label class="block text-sm mb-1">Digits:</label>
+        <select id="add-digits" class="w-full border rounded p-1 mb-2">
+          <option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+        
+        <label class="flex items-center text-sm mb-3">
+          <input type="checkbox" id="add-repeat" class="mr-2"> Allow repeats
+        </label>
+        
+        <button onclick="calculateCombinations('add')" class="w-full border rounded py-2 font-bold hover:bg-black hover:text-white">
+          Find
+        </button>
+        <div id="add-results" class="mt-4 text-sm"></div>
+        <div id="add-saved" class="mt-4 text-sm"></div>
+      </div>
 
-            <!-- Subtraction Section -->
-            <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/20">
-                <h2 class="text-gray-800 text-xl font-bold mb-6 text-center pb-3 border-b-2 border-orange-500">
-                    <span class="text-2xl mr-2">−</span>Subtraction
-                </h2>
-                <div class="mb-4">
-                    <label for="subtract-goal" class="block text-sm font-semibold text-gray-700 mb-2">Goal Number:</label>
-                    <input type="number" id="subtract-goal" min="1" max="100" value="5" 
-                           class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500 transition-colors">
-                </div>
-                <div class="mb-4">
-                    <label for="subtract-digits" class="block text-sm font-semibold text-gray-700 mb-2">Number of Digits:</label>
-                    <select id="subtract-digits" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500 transition-colors">
-                        <option value="2" selected>2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div class="flex items-center gap-3 mb-4">
-                    <input type="checkbox" id="subtract-repeat" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                    <label for="subtract-repeat" class="text-sm font-semibold text-gray-700">Allow repeating digits</label>
-                </div>
-                <button onclick="calculateCombinations('subtract')" 
-                        class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-3 px-4 rounded-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-200 mb-4">
-                    Find Combinations
-                </button>
-                <div id="subtract-results" class="mt-5"></div>
-                <div class="mt-5 pt-4 border-t-2 border-gray-200">
-                    <h3 class="text-gray-700 font-semibold mb-3">Saved Combinations</h3>
-                    <div id="subtract-saved"></div>
-                </div>
-            </div>
+      <!-- Subtraction -->
+      <div class="border rounded-xl p-4">
+        <h2 class="text-lg font-bold mb-4 text-center">− Subtraction</h2>
+        <label class="block text-sm mb-1">Goal:</label>
+        <input id="subtract-goal" type="number" value="5" class="w-full border rounded p-1 mb-2">
+        
+        <label class="block text-sm mb-1">Digits:</label>
+        <select id="subtract-digits" class="w-full border rounded p-1 mb-2">
+          <option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+        
+        <label class="flex items-center text-sm mb-3">
+          <input type="checkbox" id="subtract-repeat" class="mr-2"> Allow repeats
+        </label>
+        
+        <button onclick="calculateCombinations('subtract')" class="w-full border rounded py-2 font-bold hover:bg-black hover:text-white">
+          Find
+        </button>
+        <div id="subtract-results" class="mt-4 text-sm"></div>
+        <div id="subtract-saved" class="mt-4 text-sm"></div>
+      </div>
 
-            <!-- Multiplication Section -->
-            <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/20">
-                <h2 class="text-gray-800 text-xl font-bold mb-6 text-center pb-3 border-b-2 border-blue-500">
-                    <span class="text-2xl mr-2">×</span>Multiplication
-                </h2>
-                <div class="mb-4">
-                    <label for="multiply-goal" class="block text-sm font-semibold text-gray-700 mb-2">Goal Number:</label>
-                    <input type="number" id="multiply-goal" min="1" max="100" value="12" 
-                           class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500 transition-colors">
-                </div>
-                <div class="mb-4">
-                    <label for="multiply-digits" class="block text-sm font-semibold text-gray-700 mb-2">Number of Digits:</label>
-                    <select id="multiply-digits" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500 transition-colors">
-                        <option value="2" selected>2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div class="flex items-center gap-3 mb-4">
-                    <input type="checkbox" id="multiply-repeat" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                    <label for="multiply-repeat" class="text-sm font-semibold text-gray-700">Allow repeating digits</label>
-                </div>
-                <button onclick="calculateCombinations('multiply')" 
-                        class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-200 mb-4">
-                    Find Combinations
-                </button>
-                <div id="multiply-results" class="mt-5"></div>
-                <div class="mt-5 pt-4 border-t-2 border-gray-200">
-                    <h3 class="text-gray-700 font-semibold mb-3">Saved Combinations</h3>
-                    <div id="multiply-saved"></div>
-                </div>
-            </div>
+      <!-- Multiplication -->
+      <div class="border rounded-xl p-4">
+        <h2 class="text-lg font-bold mb-4 text-center">× Multiplication</h2>
+        <label class="block text-sm mb-1">Goal:</label>
+        <input id="multiply-goal" type="number" value="12" class="w-full border rounded p-1 mb-2">
+        
+        <label class="block text-sm mb-1">Digits:</label>
+        <select id="multiply-digits" class="w-full border rounded p-1 mb-2">
+          <option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+        
+        <label class="flex items-center text-sm mb-3">
+          <input type="checkbox" id="multiply-repeat" class="mr-2"> Allow repeats
+        </label>
+        
+        <button onclick="calculateCombinations('multiply')" class="w-full border rounded py-2 font-bold hover:bg-black hover:text-white">
+          Find
+        </button>
+        <div id="multiply-results" class="mt-4 text-sm"></div>
+        <div id="multiply-saved" class="mt-4 text-sm"></div>
+      </div>
 
-            <!-- Division Section -->
-            <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/20">
-                <h2 class="text-gray-800 text-xl font-bold mb-6 text-center pb-3 border-b-2 border-purple-500">
-                    <span class="text-2xl mr-2">÷</span>Division
-                </h2>
-                <div class="mb-4">
-                    <label for="divide-goal" class="block text-sm font-semibold text-gray-700 mb-2">Goal Number:</label>
-                    <input type="number" id="divide-goal" min="1" max="100" value="3" 
-                           class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500 transition-colors">
-                </div>
-                <div class="mb-4">
-                    <label for="divide-digits" class="block text-sm font-semibold text-gray-700 mb-2">Number of Digits:</label>
-                    <select id="divide-digits" class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-base focus:outline-none focus:border-blue-500 transition-colors">
-                        <option value="2" selected>2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div class="flex items-center gap-3 mb-4">
-                    <input type="checkbox" id="divide-repeat" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                    <label for="divide-repeat" class="text-sm font-semibold text-gray-700">Allow repeating digits</label>
-                </div>
-                <button onclick="calculateCombinations('divide')" 
-                        class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-4 rounded-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-200 mb-4">
-                    Find Combinations
-                </button>
-                <div id="divide-results" class="mt-5"></div>
-                <div class="mt-5 pt-4 border-t-2 border-gray-200">
-                    <h3 class="text-gray-700 font-semibold mb-3">Saved Combinations</h3>
-                    <div id="divide-saved"></div>
-                </div>
-            </div>
-        </div>
+      <!-- Division -->
+      <div class="border rounded-xl p-4">
+        <h2 class="text-lg font-bold mb-4 text-center">÷ Division</h2>
+        <label class="block text-sm mb-1">Goal:</label>
+        <input id="divide-goal" type="number" value="3" class="w-full border rounded p-1 mb-2">
+        
+        <label class="block text-sm mb-1">Digits:</label>
+        <select id="divide-digits" class="w-full border rounded p-1 mb-2">
+          <option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+        
+        <label class="flex items-center text-sm mb-3">
+          <input type="checkbox" id="divide-repeat" class="mr-2"> Allow repeats
+        </label>
+        
+        <button onclick="calculateCombinations('divide')" class="w-full border rounded py-2 font-bold hover:bg-black hover:text-white">
+          Find
+        </button>
+        <div id="divide-results" class="mt-4 text-sm"></div>
+        <div id="divide-saved" class="mt-4 text-sm"></div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Storage for saved combinations
-        let savedCombinations = {
-            add: [],
-            subtract: [],
-            multiply: [],
-            divide: []
-        };
-
-        function generatePermutations(arr, length, allowRepeats) {
-            if (length === 1) {
-                return arr.map(x => [x]);
-            }
-            
-            let result = [];
-            for (let i = 0; i < arr.length; i++) {
-                let remaining = allowRepeats ? arr : arr.filter((_, index) => index !== i);
-                let perms = generatePermutations(remaining, length - 1, allowRepeats);
-                perms.forEach(perm => result.push([arr[i], ...perm]));
-            }
-            return result;
-        }
-
-        function calculateCombinations(operation) {
-            const goal = parseInt(document.getElementById(`${operation}-goal`).value);
-            const numDigits = parseInt(document.getElementById(`${operation}-digits`).value);
-            const allowRepeats = document.getElementById(`${operation}-repeat`).checked;
-            
-            if (!goal || numDigits < 2) {
-                alert('Please enter valid goal number and number of digits');
-                return;
-            }
-
-            const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-            const permutations = generatePermutations(digits, numDigits, allowRepeats);
-            const validCombinations = [];
-            const seenSorted = new Set(); // Track sorted combinations to avoid duplicates
-
-            permutations.forEach(perm => {
-                let result;
-                let isValid = false;
-                
-                switch (operation) {
-                    case 'add':
-                    case 'multiply':
-                        // For addition and multiplication, order doesn't matter
-                        if (operation === 'add') {
-                            result = perm.reduce((sum, digit) => sum + digit, 0);
-                        } else {
-                            result = perm.reduce((product, digit) => product * digit, 1);
-                        }
-                        
-                        if (result === goal) {
-                            const sortedKey = [...perm].sort((a, b) => a - b).join(',');
-                            if (!seenSorted.has(sortedKey)) {
-                                seenSorted.add(sortedKey);
-                                validCombinations.push([...perm].sort((a, b) => a - b));
-                            }
-                        }
-                        break;
-                        
-                    case 'subtract':
-                        // For subtraction, we need to check all possible arrangements
-                        // since order matters, but we want unique sets of digits
-                        const sortedKey = [...perm].sort((a, b) => a - b).join(',');
-                        if (!seenSorted.has(sortedKey)) {
-                            // Check if any arrangement of these digits gives the goal
-                            const arrangements = generatePermutations(perm, numDigits, true);
-                            let foundValid = false;
-                            
-                            for (let arrangement of arrangements) {
-                                const testResult = arrangement.reduce((diff, digit, index) => 
-                                    index === 0 ? digit : diff - digit);
-                                if (testResult === goal) {
-                                    foundValid = true;
-                                    break;
-                                }
-                            }
-                            
-                            if (foundValid) {
-                                seenSorted.add(sortedKey);
-                                validCombinations.push([...perm].sort((a, b) => a - b));
-                            }
-                        }
-                        break;
-                        
-                    case 'divide':
-                        // For division, we need to check all possible arrangements
-                        // since order matters, but we want unique sets of digits
-                        const sortedKeyDiv = [...perm].sort((a, b) => a - b).join(',');
-                        if (!seenSorted.has(sortedKeyDiv)) {
-                            // Check if any arrangement of these digits gives the goal
-                            const arrangements = generatePermutations(perm, numDigits, true);
-                            let foundValid = false;
-                            
-                            for (let arrangement of arrangements) {
-                                if (arrangement.slice(1).every(digit => digit !== 0)) { // Avoid division by zero
-                                    const testResult = arrangement.reduce((quotient, digit, index) => 
-                                        index === 0 ? digit : quotient / digit);
-                                    if (Math.abs(testResult - goal) < 0.0001) { // Handle floating point precision
-                                        foundValid = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            
-                            if (foundValid) {
-                                seenSorted.add(sortedKeyDiv);
-                                validCombinations.push([...perm].sort((a, b) => a - b));
-                            }
-                        }
-                        break;
-                }
-            });
-
-            displayResults(operation, validCombinations, goal);
-        }
-
-        function displayResults(operation, combinations, goal) {
-            const resultsDiv = document.getElementById(`${operation}-results`);
-            
-            if (combinations.length === 0) {
-                resultsDiv.innerHTML = '<div class="text-center text-gray-500 italic py-5">No valid combinations found</div>';
-                return;
-            }
-
-            let html = `<h3 class="font-semibold text-gray-700 mb-3">Found ${combinations.length} combination(s) for ${goal}:</h3>`;
-            combinations.forEach((combo, index) => {
-                html += `
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-3 flex justify-between items-center">
-                        <span class="font-mono font-bold text-lg text-gray-800">[${combo.join(', ')}]</span>
-                        <button class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-3 rounded-md transition-colors text-sm" onclick="saveCombination('${operation}', [${combo.join(',')}], ${goal})">
-                            Save
-                        </button>
-                    </div>
-                `;
-            });
-            
-            resultsDiv.innerHTML = html;
-        }
-
-        function saveCombination(operation, combination, goal) {
-            const saveData = { combination, goal, timestamp: new Date().toLocaleString() };
-            
-            // Check if already saved
-            if (savedCombinations[operation].some(saved => 
-                saved.combination.join(',') === combination.join(',') && saved.goal === goal)) {
-                alert('This combination is already saved!');
-                return;
-            }
-            
-            savedCombinations[operation].push(saveData);
-            updateSavedDisplay(operation);
-        }
-
-        function deleteSavedCombination(operation, index) {
-            savedCombinations[operation].splice(index, 1);
-            updateSavedDisplay(operation);
-        }
-
-        function updateSavedDisplay(operation) {
-            const savedDiv = document.getElementById(`${operation}-saved`);
-            
-            if (savedCombinations[operation].length === 0) {
-                savedDiv.innerHTML = '<div class="text-center text-gray-500 italic py-5">No saved combinations</div>';
-                return;
-            }
-
-            let html = '';
-            savedCombinations[operation].forEach((saved, index) => {
-                html += `
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-3 flex justify-between items-center">
-                        <div>
-                            <span class="font-mono font-bold text-lg text-gray-800">[${saved.combination.join(', ')}] = ${saved.goal}</span>
-                            <br><small class="text-gray-600">Saved: ${saved.timestamp}</small>
-                        </div>
-                        <button class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-3 rounded-md transition-colors text-sm" onclick="deleteSavedCombination('${operation}', ${index})">
-                            Delete
-                        </button>
-                    </div>
-                `;
-            });
-            
-            savedDiv.innerHTML = html;
-        }
-
-        // Initialize saved displays
-        window.onload = function() {
-            ['add', 'subtract', 'multiply', 'divide'].forEach(op => {
-                updateSavedDisplay(op);
-            });
-        };
-    </script>
+  <script src="script.js" />
 </body>
 </html>
