@@ -11,101 +11,133 @@
         extend: {
           fontFamily: {
             mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"]
+          },
+          colors: {
+            dark: "#111",
+            light: "#eee"
           }
         }
       }
     }
   </script>
 </head>
-<body class="bg-white text-black min-h-screen p-5 font-mono">
+<body class="bg-dark text-light min-h-screen p-5 font-mono">
   <div class="max-w-6xl mx-auto">
     <h1 class="text-center text-3xl font-bold mb-6">KenKen Helper</h1>
     
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
       <!-- Template Section -->
-      <div class="border rounded-xl p-4">
+      <div class="border border-light/20 rounded-xl p-4 bg-black">
         <h2 class="text-lg font-bold mb-4 text-center">+ Addition</h2>
-        <label class="block text-sm mb-1">Goal:</label>
-        <input id="add-goal" type="number" value="10" class="w-full border rounded p-1 mb-2">
         
-        <label class="block text-sm mb-1">Digits:</label>
-        <select id="add-digits" class="w-full border rounded p-1 mb-2">
-          <option>2</option><option>3</option><option>4</option><option>5</option>
-        </select>
+        <label class="block text-sm mb-1">Goal:</label>
+        <input id="add-goal" type="number" value="10" 
+               class="w-full border border-light/20 bg-dark text-light rounded p-2 mb-3">
+
+        <label class="block text-sm mb-2">Digits:</label>
+        <div class="flex gap-2 mb-3" id="add-digits">
+          <button class="digit-btn px-3 py-1 border rounded" data-value="2">2</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="3">3</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="4">4</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="5">5</button>
+        </div>
         
         <label class="flex items-center text-sm mb-3">
           <input type="checkbox" id="add-repeat" class="mr-2"> Allow repeats
         </label>
         
-        <button onclick="calculateCombinations('add')" class="w-full border rounded py-2 font-bold hover:bg-black hover:text-white">
+        <button onclick="calculateCombinations('add')" 
+                class="w-full border rounded py-2 font-bold hover:bg-light hover:text-black">
           Find
         </button>
+        
         <div id="add-results" class="mt-4 text-sm"></div>
         <div id="add-saved" class="mt-4 text-sm"></div>
       </div>
 
       <!-- Subtraction -->
-      <div class="border rounded-xl p-4">
+      <div class="border border-light/20 rounded-xl p-4 bg-black">
         <h2 class="text-lg font-bold mb-4 text-center">− Subtraction</h2>
-        <label class="block text-sm mb-1">Goal:</label>
-        <input id="subtract-goal" type="number" value="5" class="w-full border rounded p-1 mb-2">
         
-        <label class="block text-sm mb-1">Digits:</label>
-        <select id="subtract-digits" class="w-full border rounded p-1 mb-2">
-          <option>2</option><option>3</option><option>4</option><option>5</option>
-        </select>
+        <label class="block text-sm mb-1">Goal:</label>
+        <input id="subtract-goal" type="number" value="5" 
+               class="w-full border border-light/20 bg-dark text-light rounded p-2 mb-3">
+
+        <label class="block text-sm mb-2">Digits:</label>
+        <div class="flex gap-2 mb-3" id="subtract-digits">
+          <button class="digit-btn px-3 py-1 border rounded" data-value="2">2</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="3">3</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="4">4</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="5">5</button>
+        </div>
         
         <label class="flex items-center text-sm mb-3">
           <input type="checkbox" id="subtract-repeat" class="mr-2"> Allow repeats
         </label>
         
-        <button onclick="calculateCombinations('subtract')" class="w-full border rounded py-2 font-bold hover:bg-black hover:text-white">
+        <button onclick="calculateCombinations('subtract')" 
+                class="w-full border rounded py-2 font-bold hover:bg-light hover:text-black">
           Find
         </button>
+        
         <div id="subtract-results" class="mt-4 text-sm"></div>
         <div id="subtract-saved" class="mt-4 text-sm"></div>
       </div>
 
       <!-- Multiplication -->
-      <div class="border rounded-xl p-4">
+      <div class="border border-light/20 rounded-xl p-4 bg-black">
         <h2 class="text-lg font-bold mb-4 text-center">× Multiplication</h2>
-        <label class="block text-sm mb-1">Goal:</label>
-        <input id="multiply-goal" type="number" value="12" class="w-full border rounded p-1 mb-2">
         
-        <label class="block text-sm mb-1">Digits:</label>
-        <select id="multiply-digits" class="w-full border rounded p-1 mb-2">
-          <option>2</option><option>3</option><option>4</option><option>5</option>
-        </select>
+        <label class="block text-sm mb-1">Goal:</label>
+        <input id="multiply-goal" type="number" value="12" 
+               class="w-full border border-light/20 bg-dark text-light rounded p-2 mb-3">
+
+        <label class="block text-sm mb-2">Digits:</label>
+        <div class="flex gap-2 mb-3" id="multiply-digits">
+          <button class="digit-btn px-3 py-1 border rounded" data-value="2">2</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="3">3</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="4">4</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="5">5</button>
+        </div>
         
         <label class="flex items-center text-sm mb-3">
           <input type="checkbox" id="multiply-repeat" class="mr-2"> Allow repeats
         </label>
         
-        <button onclick="calculateCombinations('multiply')" class="w-full border rounded py-2 font-bold hover:bg-black hover:text-white">
+        <button onclick="calculateCombinations('multiply')" 
+                class="w-full border rounded py-2 font-bold hover:bg-light hover:text-black">
           Find
         </button>
+        
         <div id="multiply-results" class="mt-4 text-sm"></div>
         <div id="multiply-saved" class="mt-4 text-sm"></div>
       </div>
 
       <!-- Division -->
-      <div class="border rounded-xl p-4">
+      <div class="border border-light/20 rounded-xl p-4 bg-black">
         <h2 class="text-lg font-bold mb-4 text-center">÷ Division</h2>
-        <label class="block text-sm mb-1">Goal:</label>
-        <input id="divide-goal" type="number" value="3" class="w-full border rounded p-1 mb-2">
         
-        <label class="block text-sm mb-1">Digits:</label>
-        <select id="divide-digits" class="w-full border rounded p-1 mb-2">
-          <option>2</option><option>3</option><option>4</option><option>5</option>
-        </select>
+        <label class="block text-sm mb-1">Goal:</label>
+        <input id="divide-goal" type="number" value="3" 
+               class="w-full border border-light/20 bg-dark text-light rounded p-2 mb-3">
+
+        <label class="block text-sm mb-2">Digits:</label>
+        <div class="flex gap-2 mb-3" id="divide-digits">
+          <button class="digit-btn px-3 py-1 border rounded" data-value="2">2</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="3">3</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="4">4</button>
+          <button class="digit-btn px-3 py-1 border rounded" data-value="5">5</button>
+        </div>
         
         <label class="flex items-center text-sm mb-3">
           <input type="checkbox" id="divide-repeat" class="mr-2"> Allow repeats
         </label>
         
-        <button onclick="calculateCombinations('divide')" class="w-full border rounded py-2 font-bold hover:bg-black hover:text-white">
+        <button onclick="calculateCombinations('divide')" 
+                class="w-full border rounded py-2 font-bold hover:bg-light hover:text-black">
           Find
         </button>
+        
         <div id="divide-results" class="mt-4 text-sm"></div>
         <div id="divide-saved" class="mt-4 text-sm"></div>
       </div>
