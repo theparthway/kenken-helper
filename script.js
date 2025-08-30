@@ -1,9 +1,7 @@
 // Storage for saved combinations
 let savedCombinations = {
   add: [],
-  subtract: [],
-  multiply: [],
-  divide: []
+  multiply: []
 };
 
 // Generate permutations (with/without repeats)
@@ -43,61 +41,18 @@ function calculateCombinations(operation) {
 
   permutations.forEach(perm => {
     let result;
-    switch (operation) {
-      case "add":
-      case "multiply":
-        result = operation === "add"
-          ? perm.reduce((sum, d) => sum + d, 0)
-          : perm.reduce((prod, d) => prod * d, 1);
+    if (operation === "add") {
+      result = perm.reduce((sum, d) => sum + d, 0);
+    } else if (operation === "multiply") {
+      result = perm.reduce((prod, d) => prod * d, 1);
+    }
 
-        if (result === goal) {
-          const key = [...perm].sort((a, b) => a - b).join(",");
-          if (!seenSorted.has(key)) {
-            seenSorted.add(key);
-            validCombinations.push([...perm].sort((a, b) => a - b));
-          }
-        }
-        break;
-
-      case "subtract":
-        const keySub = [...perm].sort((a, b) => a - b).join(",");
-        if (!seenSorted.has(keySub)) {
-          const arrangements = generatePermutations(perm, numDigits, true);
-          let found = false;
-          for (let arr of arrangements) {
-            const test = arr.reduce((diff, d, i) => (i === 0 ? d : diff - d));
-            if (test === goal) {
-              found = true;
-              break;
-            }
-          }
-          if (found) {
-            seenSorted.add(keySub);
-            validCombinations.push([...perm].sort((a, b) => a - b));
-          }
-        }
-        break;
-
-      case "divide":
-        const keyDiv = [...perm].sort((a, b) => a - b).join(",");
-        if (!seenSorted.has(keyDiv)) {
-          const arrangements = generatePermutations(perm, numDigits, true);
-          let found = false;
-          for (let arr of arrangements) {
-            if (arr.slice(1).every(d => d !== 0)) {
-              const test = arr.reduce((q, d, i) => (i === 0 ? d : q / d));
-              if (Math.abs(test - goal) < 0.0001) {
-                found = true;
-                break;
-              }
-            }
-          }
-          if (found) {
-            seenSorted.add(keyDiv);
-            validCombinations.push([...perm].sort((a, b) => a - b));
-          }
-        }
-        break;
+    if (result === goal) {
+      const key = [...perm].sort((a, b) => a - b).join(",");
+      if (!seenSorted.has(key)) {
+        seenSorted.add(key);
+        validCombinations.push([...perm].sort((a, b) => a - b));
+      }
     }
   });
 
@@ -108,15 +63,15 @@ function displayResults(operation, combinations, goal) {
   const resultsDiv = document.getElementById(`${operation}-results`);
   if (combinations.length === 0) {
     resultsDiv.innerHTML =
-      `<div class="text-center text-gray-400 italic py-2">No combinations</div>`;
+      `<div class="text-center text-gray-400 italic py-1">No combinations</div>`;
     return;
   }
-  let html = `<div class="font-bold mb-2">Found ${combinations.length}:</div>`;
+  let html = `<div class="font-bold mb-1">Found ${combinations.length}:</div>`;
   combinations.forEach(combo => {
     html += `
-      <div class="border border-gray-600 rounded p-2 mb-2 flex justify-between items-center">
+      <div class="border border-gray-600 rounded px-2 py-1 mb-1 flex justify-between items-center">
         <span>[${combo.join(", ")}]</span>
-        <button class="px-2 py-1 border rounded text-xs hover:bg-light hover:text-black"
+        <button class="px-1 py-0 border rounded text-xs hover:bg-light hover:text-black"
                 onclick="saveCombination('${operation}', [${combo.join(",")}], ${goal})">
           Save
         </button>
@@ -146,17 +101,17 @@ function updateSavedDisplay(operation) {
   const savedDiv = document.getElementById(`${operation}-saved`);
   if (savedCombinations[operation].length === 0) {
     savedDiv.innerHTML =
-      `<div class="text-center text-gray-400 italic py-2">No saved</div>`;
+      `<div class="text-center text-gray-400 italic py-1">No saved</div>`;
     return;
   }
   let html = "";
   savedCombinations[operation].forEach((saved, index) => {
     html += `
-      <div class="border border-gray-600 rounded p-2 mb-2 flex justify-between items-center">
+      <div class="border border-gray-600 rounded px-2 py-1 mb-1 flex justify-between items-center">
         <span>[${saved.combination.join(", ")}] = ${saved.goal}</span>
-        <button class="px-2 py-1 border rounded text-xs hover:bg-light hover:text-black"
+        <button class="px-1 py-0 border rounded text-xs hover:bg-light hover:text-black"
                 onclick="deleteSavedCombination('${operation}', ${index})">
-          Delete
+          Del
         </button>
       </div>`;
   });
@@ -177,5 +132,5 @@ document.querySelectorAll(".digit-btn").forEach(btn => {
 
 // Initialize empty saved sections
 window.onload = () => {
-  ["add", "subtract", "multiply", "divide"].forEach(op => updateSavedDisplay(op));
+  ["add", "multiply"].forEach(op => updateSavedDisplay(op));
 };
